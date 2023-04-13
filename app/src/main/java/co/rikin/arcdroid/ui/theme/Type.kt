@@ -1,6 +1,7 @@
 package co.rikin.arcdroid.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -10,13 +11,14 @@ import co.rikin.arcdroid.R
 
 // Set of Material typography styles to start with
 val quicksand = FontFamily(
-  Font(resId = R.font.quicksand_medium, weight = FontWeight.Medium)
+  Font(resId = R.font.quicksand_medium, weight = FontWeight.Medium),
+  Font(resId = R.font.quicksand_bold, weight = FontWeight.Bold)
 )
 val Typography = Typography(
   bodyLarge = TextStyle(
     fontFamily = quicksand,
-    fontWeight = FontWeight.Medium,
-    fontSize = 16.sp,
+    fontWeight = FontWeight.Bold,
+    fontSize = 28.sp,
     lineHeight = 24.sp,
     letterSpacing = 0.5.sp
   )
