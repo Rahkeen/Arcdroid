@@ -12,9 +12,9 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Aurora1 = Color(0xFF22223b)
-val Aurora2 = Color(0xFF6930C3)
-val Aurora3 = Color(0xFF72EFDD)
-val Aurora4 = Color(0xFF48BFE3)
+val Aurora2 = Color(0xFF80ffdb)
+val Aurora3 = Color(0xFF56cfe1)
+val Aurora4 = Color(0xFF5e60ce)
 
 val brush1 = Brush.verticalGradient(colors = listOf(Aurora2, Aurora4))
 val brush2 = Brush.horizontalGradient(colors = listOf(Aurora3, Aurora1))

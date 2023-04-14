@@ -304,6 +304,15 @@ fun SmileyFace() {
           0f at 200 with LinearEasing
         }
       )
+      delay(2000)
+      blink.animateTo(
+        targetValue = 0f,
+        animationSpec = keyframes {
+          durationMillis = 200
+          15f at 100 with LinearEasing
+          0f at 200 with LinearEasing
+        }
+      )
     }
     launch {
       leftEyeTranslationX.animateTo(
