@@ -8,30 +8,46 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -40,9 +56,13 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import co.rikin.arcdroid.ui.theme.AmbientGray
+import co.rikin.arcdroid.ui.theme.AmbientGrayDark
+import co.rikin.arcdroid.ui.theme.AmbientGrayText
 import co.rikin.arcdroid.ui.theme.ArcdroidTheme
 import co.rikin.arcdroid.ui.theme.Aurora1
 import co.rikin.arcdroid.ui.theme.brush1
@@ -56,25 +76,51 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
     setContent {
-      ArcdroidTheme {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-          BlurryBlobBackground()
-          Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            SmileyFace()
-            Text(
-              "Sup.",
-              modifier = Modifier.graphicsLayer(alpha = 1.0f),
-              color = Color.White,
-              style = MaterialTheme.typography.bodyLarge
-            )
-          }
-        }
+      App()
+    }
+  }
+}
+
+@Composable
+fun App() {
+  ArcdroidTheme {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+      BlurryBlobBackground()
+      Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        SmileyFace()
+        Text(
+          "Sup",
+          modifier = Modifier.graphicsLayer(alpha = 1.0f),
+          color = Color.White,
+          style = MaterialTheme.typography.bodyLarge
+        )
+      }
+      Column(
+        modifier = Modifier
+          .align(Alignment.BottomCenter)
+          .padding(horizontal = 16.dp)
+          .padding(bottom = 48.dp),
+        verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+      ) {
+        Icon(
+          modifier = Modifier.size(40.dp),
+          painter = painterResource(id = R.drawable.ic_arc),
+          tint = AmbientGray.copy(alpha = 0.7f),
+          contentDescription = "Arc Icon"
+        )
+        FancyButton()
       }
     }
   }
 }
 
 @Preview
+@Composable
+fun AppPreview() {
+  App()
+}
+
 @Composable
 fun BlurryBlobBackground() {
   val infinite = rememberInfiniteTransition()
@@ -239,16 +285,6 @@ fun BlurryBlobBackground() {
 @Composable
 fun SmileyFace() {
   fun Int.pi() = (Math.PI * this).toFloat()
-//  val leftEyeTranslationX = animateFloatAsState(
-//    targetValue = 0f,
-//    animationSpec = keyframes {
-//      durationMillis = 5000
-//      -10f at 2000
-//      10f at 4000
-//      0f at 5000
-//    },
-//    label = "Left Eye Translation X"
-//  )
 
   val leftEyeTranslationX = remember {
     Animatable(0f)
@@ -430,7 +466,7 @@ fun SmileyFace() {
         path = headPath,
         color = Color.White,
         style = Stroke(
-          width = 12.dp.toPx(),
+          width = 6.dp.toPx(),
           join = StrokeJoin.Round,
         )
       )
@@ -438,7 +474,7 @@ fun SmileyFace() {
       // left antenna
       drawLine(
         color = Color.White,
-        strokeWidth = 12.dp.toPx(),
+        strokeWidth = 6.dp.toPx(),
         cap = StrokeCap.Round,
         start = Offset(leftAntennaPosition[0], leftAntennaPosition[1]),
         end = Offset(
@@ -450,7 +486,7 @@ fun SmileyFace() {
       // right antenna
       drawLine(
         color = Color.White,
-        strokeWidth = 12.dp.toPx(),
+        strokeWidth = 6.dp.toPx(),
         cap = StrokeCap.Round,
         start = Offset(rightAntennaPosition[0], rightAntennaPosition[1]),
         end = Offset(
@@ -591,5 +627,64 @@ fun SmileyFace() {
         )
       }
     }
+  }
+}
+
+@Composable
+fun FancyButton() {
+  val interactionSource = remember { MutableInteractionSource() }
+  val pressed by interactionSource.collectIsPressedAsState()
+  val translation = animateFloatAsState(
+    targetValue = if (pressed) 10f else 0f,
+    animationSpec = spring(
+      dampingRatio = Spring.DampingRatioNoBouncy,
+      stiffness = Spring.StiffnessMedium,
+    ),
+    label = "Button Translation"
+  )
+  Box(
+    modifier = Modifier
+      .fillMaxWidth()
+      .wrapContentHeight()
+      .padding(horizontal = 16.dp, vertical = 8.dp),
+    contentAlignment = Alignment.Center
+  ) {
+    Box(
+      modifier = Modifier
+        .graphicsLayer(translationY = 10f)
+        .fillMaxWidth(fraction = 0.99f)
+        .height(60.dp)
+        .background(color = AmbientGrayDark, shape = RoundedCornerShape(20.dp))
+        .clip(shape = RoundedCornerShape(20.dp)),
+    ) {
+    }
+    Box(
+      modifier = Modifier
+        .graphicsLayer(translationY = translation.value)
+        .fillMaxWidth()
+        .height(60.dp)
+        .background(
+          brush = Brush.verticalGradient(
+            colors = listOf(
+              Color.White,
+              AmbientGray
+            ),
+          ),
+          shape = RoundedCornerShape(20.dp)
+        )
+        .clip(RoundedCornerShape(20.dp))
+        .clickable(interactionSource = interactionSource, indication = null) {},
+      contentAlignment = Alignment.Center
+    ) {
+      Text("Not yet", style = MaterialTheme.typography.labelLarge, color = AmbientGrayText)
+    }
+  }
+}
+
+@Preview
+@Composable
+fun FancyButtonPreview() {
+  ArcdroidTheme {
+    FancyButton()
   }
 }

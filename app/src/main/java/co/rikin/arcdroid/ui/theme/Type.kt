@@ -12,13 +12,21 @@ import co.rikin.arcdroid.R
 // Set of Material typography styles to start with
 val quicksand = FontFamily(
   Font(resId = R.font.quicksand_medium, weight = FontWeight.Medium),
+  Font(resId = R.font.quicksand_semibold, weight = FontWeight.SemiBold),
   Font(resId = R.font.quicksand_bold, weight = FontWeight.Bold)
 )
 val Typography = Typography(
   bodyLarge = TextStyle(
     fontFamily = quicksand,
     fontWeight = FontWeight.Bold,
-    fontSize = 28.sp,
+    fontSize = 36.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.5.sp
+  ),
+  labelLarge = TextStyle(
+    fontFamily = quicksand,
+    fontWeight = FontWeight.Bold,
+    fontSize = 24.sp,
     lineHeight = 24.sp,
     letterSpacing = 0.5.sp
   )
